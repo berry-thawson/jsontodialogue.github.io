@@ -1,9 +1,41 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>My Static Website</title>
+    <title>Json to extract text</title>
+    <style>
+        textarea {
+            width: 900px;
+            height: 350px;
+        }
+    </style>
   </head>
   <body>
-    <h1>My Static Website</h1>
+    <h1>Upload the json file to extract data</h1>
+    <input type="file" id="file-selector"/>
+    <script>
+      if (window.FileList && window.File) {
+        document.getElementById('file-selector').addEventListener('change', event => {
+          output.innerHTML = '';
+          for (const file of event.target.files) {
+              (async () => {
+                  const fileContent = await file.text();
+                  const obj = JSON.parse(fileContent);
+                  let output = "";
+                  for (let result of obj.results) {
+                       for (let alternative of result.alternatives) {
+                           output = output === "" ? "" : output + ". ";
+                           output = output + alternative.transcript;
+                       }
+                  }
+                  document.getElementById('extractText').value = output;
+                  alert(output);
+              })();            
+          }
+        }); 
+      }
+    </script>
+    <div>
+        <textarea id="extractText"></textarea>
+    </div>
   </body>
 </html>
